@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.Mapper.FormMapper">
+
+    <resultMap id="FormResultMap" type="com.example.demo.pojo.Form.Form">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="clubId" column="club_id"/>
+        <result property="clubName" column="club_name"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="updatedTime" column="updated_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="status" column="status"/>
+        <collection property="questions" resultMap="QuestionResultMap" columnPrefix="question_"/>
+    </resultMap>
+
+    <resultMap id="QuestionResultMap" type="com.example.demo.pojo.Form.Question">
+        <id property="id" column="id"/>
+        <result property="formId" column="form_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="titleImg" column="title_img"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="isRequired" column="required"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <collection property="options" resultMap="OptionResultMap" columnPrefix="option_"/>
+    </resultMap>
+
+    <resultMap id="OptionResultMap" type="com.example.demo.pojo.Form.Option">
+        <id property="id" column="id"/>
+        <result property="value" column="value"/>
+        <result property="url" column="url"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+    <sql id="complete_form">
+        SELECT
+            f.id AS id,
+            f.name AS name,
+            f.club_id AS club_id,
+            c.name AS club_name,
+            f.created_time AS created_time,
+            f.updated_time AS updated_time,
+            f.is_deleted AS is_deleted,
+            f.status AS status,
+            q.id AS question_id,
+            q.form_id AS question_form_id,
+            q.type AS question_type,
+            q.title AS question_title,
+            q.title_img AS question_title_img,
+            q.sort_order AS question_sort_order,
+            q.is_required AS question_required,
+            q.is_deleted AS question_is_deleted,
+            o.id AS question_option_id,
+            o.value AS question_option_value,
+            o.url AS question_option_url,
+            o.sort_order AS question_option_sort_order,
+            o.is_deleted AS question_option_is_deleted
+        FROM forms f
+                 LEFT JOIN clubs c ON f.club_id = c.id AND c.is_deleted = 0
+                 LEFT JOIN questions q ON f.id = q.form_id AND q.is_deleted = 0
+                 LEFT JOIN options o ON q.id = o.question_id AND o.is_deleted = 0
+    </sql>
+    <sql id="default_form_order">
+        ORDER BY f.updated_time DESC, q.sort_order ASC, o.sort_order ASC;
+    </sql>
+
+
+    <select id="getAllForms" resultType="com.example.demo.pojo.Form.Form">
+        <include refid="complete_form"/>
+        WHERE f.is_deleted = 0
+        <include refid="default_form_order"/>
+    </select>
+
+    <select id="getByClubId" resultMap="FormResultMap">
+        <include refid="complete_form"/>
+        WHERE f.club_id = #{clubId} AND f.is_deleted = 0
+        <include refid="default_form_order"/>
+    </select>
+
+
+    <select id="getFormByStatus" resultMap="FormResultMap">
+        <include refid="complete_form"/>
+        WHERE f.status = #{status} AND f.is_deleted = 0
+        <include refid="default_form_order"/>
+    </select>
+
+    <select id="getSubmittedForms" resultMap="FormResultMap">
+        <include refid="complete_form"/>
+        WHERE f.status != #{status} AND f.is_deleted = 0
+        <include refid="default_form_order"/>
+    </select>
+
+
+    <select id="getFormsByName" resultType="com.example.demo.pojo.Form.Form">
+        <include refid="complete_form"/>
+        WHERE f.name LIKE CONCAT('%', #{name}, '%') AND f.is_deleted = 0
+        <include refid="default_form_order"/>
+    </select>
+
+</mapper>

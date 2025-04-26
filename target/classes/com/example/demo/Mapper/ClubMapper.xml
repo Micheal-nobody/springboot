@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.Mapper.ClubMapper">
+
+    <resultMap id="ClubResultMap" type="com.example.demo.pojo.Club">
+        <id property="id" column="club_id"/>
+        <result property="name" column="club_name"/>
+        <result property="description" column="club_description"/>
+        <result property="coverImage" column="club_cover_image"/>
+        <result property="category" column="club_category"/>
+        <result property="leaderId" column="club_leader_id"/>
+        <result property="createTime" column="club_create_time"/>
+        <result property="updateTime" column="club_update_time"/>
+        <result property="isDeleted" column="club_is_deleted"/>
+    </resultMap>
+
+
+
+    <select id="getClubIdsByName" resultType="java.lang.Long">
+        SELECT id FROM clubs WHERE name LIKE CONCAT(#{clubName}, '%')
+    </select>
+
+
+</mapper>
