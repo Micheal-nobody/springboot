@@ -1,75 +1,42 @@
-package com.example.demo.Config;
+package com.example.demo.Config.Security;
 
 import com.example.demo.Mapper.UserMapper;
 import com.example.demo.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsPasswordService;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Component
-public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPasswordService {
+public class DbUserDetailsService implements UserDetailsService {
 
     @Autowired
     private UserMapper userMapper;
 
 
     @Override
-    public UserDetails updatePassword(UserDetails user, String newPassword) {
-        return null;
-    }
-
-    @Override
-    public void createUser(UserDetails user) {
-
-    }
-
-    @Override
-    public void updateUser(UserDetails user) {
-
-    }
-
-    @Override
-    public void deleteUser(String username) {
-
-    }
-
-    @Override
-    public void changePassword(String oldPassword, String newPassword) {
-
-    }
-
-    @Override
-    public boolean userExists(String username) {
-        return false;
-    }
-
-    /**
-     *最终要的方法，根据用户名获取用户信息
-     * @param username
-     * @return
-     * @throws UsernameNotFoundException
-     */
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("DbUserDetailsService.loadUserByUsername: "+username);
+
         User user = userMapper.getByAccount(username);
 
         if(user == null){
+            System.out.println("User not found with username: " + username);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }else {
+            System.out.println("User found with username: " + username);
 
             Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
 
             return new org.springframework.security.core.userdetails.User(
                     user.getAccount(),      //username
-                    user.getPassword(),     //password
+                    //TODO:临时方案，后续需要加密密码
+                    "{noop}"+user.getPassword(),     //password
                     true,                  //enabled
                     true,                  //用户账号是否未过期
                     true,                  //用户凭证（密码）是否未过期
@@ -77,6 +44,5 @@ public class DBUserDetailsManager implements UserDetailsManager, UserDetailsPass
                     authorities            //权限列表
             );
         }
-
     }
 }

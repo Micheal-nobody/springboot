@@ -28,6 +28,6 @@ public interface UserMapper {
     @Select("SELECT * FROM users WHERE account = #{account} AND password = #{password}")
     public User getByAccountAndPassword(User user);
 
-    @Select("SELECT * FROM users WHERE account = #{account}")
+    @Select("SELECT * FROM users WHERE account = #{username}")
     User getByAccount(String username);
 }

@@ -4,22 +4,34 @@ package com.example.demo.Filter;
 import com.example.demo.utils.JwtUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 
 import java.io.IOException;
 import java.util.Map;
 
 //过滤所有请求
-@WebFilter(urlPatterns = "/*")
+@Component
+@WebFilter(urlPatterns = "/api/*")
 public class JwtAuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("JwtAuthenticationFilter is executed");
+//        打印请求参数
+        System.out.println("----------------------------------------------");
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        if ("/login".equals(req.getRequestURI())) {
+            System.out.println("Login Request Parameters:");
+            System.out.println("Username: " + req.getParameter("username"));
+            System.out.println("Password: " + req.getParameter("password")); // 注意：生产环境不要打印密码！
+        }
+        System.out.println("----------------------------------------------");
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
