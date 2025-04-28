@@ -1,5 +1,6 @@
 package com.example.demo.Config;
 
+import com.example.demo.Config.Security.MyAuthenticationEntryPoint;
 import com.example.demo.Config.Security.MyAuthenticationFailureHandler;
 import com.example.demo.Config.Security.MyAuthenticationSuccessHandler;
 import com.example.demo.Config.Security.DbUserDetailsService;
@@ -27,25 +28,37 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 禁用默认的/logout端点
-        http
-                .csrf(AbstractHttpConfigurer::disable) // 禁用CSRF
+        http.csrf(AbstractHttpConfigurer::disable) // 禁用CSRF
                     .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login/**").permitAll() // 允许登录接口公开访问
                         .anyRequest().authenticated() // 其他请求需要认证
-                )
-                .formLogin(form -> {
+                );
+
+        // 配置登录页面
+        http.formLogin(form -> {
                     form.loginProcessingUrl("/login") // 登录接口地址
                             .usernameParameter("username")
                             .passwordParameter("password")
                             .successHandler(new MyAuthenticationSuccessHandler())//自定义登录成功处理器
                             .failureHandler(new MyAuthenticationFailureHandler())//自定义登录失败处理器
-                    ;
 
-                })
+                    ;
+                });
+
+        // 配置退出登录
+        http.logout(
+            AbstractHttpConfigurer::disable // 禁用默认的/logout端点
+        );
+
+
+        //使用lambda表达式配置异常处理器
+        http.exceptionHandling(exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(new MyAuthenticationEntryPoint())
+        );
 
 
                 // 添加以下配置，禁用默认的登录页面和重定向
-                .httpBasic(AbstractHttpConfigurer::disable) // 禁用HTTP Basic认证
+                http.httpBasic(AbstractHttpConfigurer::disable) // 禁用HTTP Basic认证
                 .logout(AbstractHttpConfigurer::disable)
                 // 添加JWT过滤器到UsernamePasswordAuthenticationFilter之前
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

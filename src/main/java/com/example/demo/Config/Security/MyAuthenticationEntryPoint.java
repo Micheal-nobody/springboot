@@ -4,16 +4,19 @@ import com.alibaba.fastjson2.JSON;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-public class MyAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint
+{
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
 
-        String localizedMessage = exception.getLocalizedMessage();
+        System.out.println("MyAuthenticationEntryPoint commence");
+
+        String localizedMessage = authException.getLocalizedMessage();
         System.out.println(localizedMessage);
 
 
@@ -25,8 +28,8 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
         String json = JSON.toJSONString(result);
 
         //返回json数据给前端
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        response.setStatus(200);
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(200);
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setContentType("application/json;charset=utf-8");

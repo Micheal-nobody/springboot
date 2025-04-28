@@ -1,7 +1,6 @@
 package com.example.demo.Config.Security;
 
 import com.alibaba.fastjson2.JSON;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -12,13 +11,13 @@ import java.util.HashMap;
 
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         System.out.println("Authentication failed");
 
         String principal = authentication.getPrincipal().toString();
 
 
-        HashMap result = new HashMap();
+        HashMap<String, Object> result = new HashMap<>();
         result.put("status", "failed");
         result.put("message", principal);
 
@@ -26,7 +25,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
         String json = JSON.toJSONString(result);
 
         //返回json数据给前端
-//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setStatus(200);
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
