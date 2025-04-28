@@ -33,6 +33,7 @@ public class DbUserDetailsService implements UserDetailsService {
 
             Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
 
+//            这是一行测试数据
             return new org.springframework.security.core.userdetails.User(
                     user.getAccount(),      //username
                     //TODO:临时方案，后续需要加密密码
