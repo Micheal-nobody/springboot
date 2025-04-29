@@ -20,7 +20,7 @@ public interface UserMapper {
 //     删除主键为id的记录
     @Delete("DELETE FROM users WHERE id = #{id}")
     public void deleteUserById(Integer id);
-
+//啊
 //    根据user对象删除记录
     @Delete("DELETE FROM users WHERE id=#{id}")
     public void deleteUserByUser(User user);
