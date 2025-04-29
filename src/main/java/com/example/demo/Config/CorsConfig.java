@@ -13,7 +13,7 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         // 允许所有来源的请求
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOriginPattern("http://localhost:5173");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
@@ -23,4 +23,5 @@ public class CorsConfig {
 
         return new CorsFilter(source);
     }
+
 }

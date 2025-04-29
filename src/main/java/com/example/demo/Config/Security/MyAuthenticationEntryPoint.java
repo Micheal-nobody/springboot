@@ -9,6 +9,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 import java.util.HashMap;
 
+//访问一个需要认证之后才能访问的接口的时，如果没有认证，则会调用此类中的commence方法，返回json数据给前端
 public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint
 {
     @Override

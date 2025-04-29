@@ -4,6 +4,7 @@ import com.example.demo.Mapper.UserMapper;
 import com.example.demo.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Component
 public class DbUserDetailsService implements UserDetailsService {
@@ -18,10 +20,8 @@ public class DbUserDetailsService implements UserDetailsService {
     @Autowired
     private UserMapper userMapper;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("DbUserDetailsService.loadUserByUsername: "+username);
 
         User user = userMapper.getByAccount(username);
 
@@ -31,7 +31,8 @@ public class DbUserDetailsService implements UserDetailsService {
         }else {
             System.out.println("User found with username: " + username);
 
-            Collection<? extends GrantedAuthority> authorities=new ArrayList<>();
+
+            Collection<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
 
             return new org.springframework.security.core.userdetails.User(
                     user.getAccount(),      //username
@@ -41,7 +42,7 @@ public class DbUserDetailsService implements UserDetailsService {
                     true,                  //用户账号是否未过期
                     true,                  //用户凭证（密码）是否未过期
                     true,                  //账户是否未锁定
-                    authorities            //权限列表
+                    authorityList            //权限列表
             );
         }
     }

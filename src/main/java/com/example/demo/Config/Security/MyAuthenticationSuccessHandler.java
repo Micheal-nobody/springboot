@@ -9,16 +9,15 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import java.io.IOException;
 import java.util.HashMap;
 
+//自定义认证成功处理器
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        System.out.println("Authentication failed");
 
         String principal = authentication.getPrincipal().toString();
 
-
         HashMap<String, Object> result = new HashMap<>();
-        result.put("status", "failed");
+        result.put("status", "success");
         result.put("message", principal);
 
         // 将结果转为json字符串
@@ -26,7 +25,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
 
         //返回json数据给前端
         response.setStatus(200);
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().println(json);
