@@ -27,9 +27,6 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
 
         //返回json数据给前端
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        response.setStatus(200);
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().println(json);
     }

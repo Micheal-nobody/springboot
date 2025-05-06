@@ -9,8 +9,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface FileMapper {
 
-
-
     @Insert("INSERT INTO images (name, type, data,create_time) " +
             "VALUES(#{name}, #{type}, #{data}, #{create_time})")
     @Options(useGeneratedKeys = true, keyProperty = "id")

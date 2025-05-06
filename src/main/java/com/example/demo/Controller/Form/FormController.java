@@ -5,7 +5,6 @@ import com.example.demo.pojo.Form.Form;
 import com.example.demo.pojo.Result;
 import com.example.demo.Service.Form.FormService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -85,7 +84,6 @@ public class FormController {
 
     //    删除表单
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("id == authentication.principal.id or hasRole('ROLE_ADMIN')")
     public Result deleteForm(@PathVariable Long id) {
         formService.deleteFormById(id);
         return Result.success();

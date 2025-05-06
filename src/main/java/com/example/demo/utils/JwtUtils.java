@@ -1,47 +1,53 @@
 package com.example.demo.utils;
 
 
-import com.example.demo.pojo.ENUM.UserLoginPermission;
+import com.example.demo.pojo.MyUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Slf4j
+// JwtUtils.java (修正后)
 public class JwtUtils {
+    private static final String FIXED_SECRET = "这是一个很长很长的密钥，它需要满足长度：64，并且必须是Base64编码的，就像这样"; // 从配置读取
+    private static final SecretKey secretKey =Keys.hmacShaKeyFor(FIXED_SECRET.getBytes());
 
-    public static String generateJwt(Map<String,Object> map,String key) {
-        SecretKey secretKey=Keys.hmacShaKeyFor(key.getBytes());
+
+    public static String generateJwt(MyUser principal, Collection<? extends GrantedAuthority> authorities) {
+
+        //设置载荷
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", principal.getId());
+
+        //设置权限，使用GrantedAuthority的getAuthority()方法获取权限字符串
+        claims.put("authorities", authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
 
         return Jwts.builder()
-                .claims(map)
-                .signWith(secretKey).compact();
+                .claims(claims)
+                .signWith(secretKey)
+                .compact();
     }
 
-    public static Map<String,Object> parseJwt(String jwtToken,String permission) {
+    public static Map<String, Object> parseJwt(String jwtToken) {
         try {
-            // 根据权限获取密钥，枚举类中定义
-            String key = UserLoginPermission.valueOf(permission).getValue();
-            SecretKey secretKey=Keys.hmacShaKeyFor(key.getBytes());
 
-            // 创建解析器并设置签名密钥
-            Jws<Claims> jws = Jwts.parser()
-                    .verifyWith(secretKey)    // HMAC密钥
+            return Jwts.parser()
+                    .verifyWith(secretKey)
                     .build()
-                    .parseSignedClaims(jwtToken);
+                    .parseSignedClaims(jwtToken)
+                    .getPayload();
 
-            // 获取Claims（载荷）
-            return jws.getPayload();
         } catch (Exception e) {
-            log.error("解析JWT失败", e);
+            log.error("JWT校验失败", e);
+            return Map.of();
         }
-        return Map.of();
     }
-
 }

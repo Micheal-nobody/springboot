@@ -15,6 +15,7 @@
         <CustomTag>
           <option name="bold" value="true" />
           <option name="color" value="#339900" />
+          <option name="type" value="//" />
         </CustomTag>
         <CustomTag>
           <option name="color" value="#FF8C00" />

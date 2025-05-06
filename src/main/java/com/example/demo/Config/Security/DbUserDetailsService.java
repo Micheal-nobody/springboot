@@ -1,7 +1,10 @@
 package com.example.demo.Config.Security;
 
 import com.example.demo.Mapper.UserMapper;
+import com.example.demo.Mapper.UserPermissionMapper;
+import com.example.demo.pojo.MyUser;
 import com.example.demo.pojo.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -10,15 +13,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 @Component
 public class DbUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserMapper userMapper;
+    private  UserMapper userMapper;
+    @Autowired
+    private UserPermissionMapper userPermissionMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -26,24 +31,19 @@ public class DbUserDetailsService implements UserDetailsService {
         User user = userMapper.getByAccount(username);
 
         if(user == null){
-            System.out.println("User not found with username: " + username);
             throw new UsernameNotFoundException("User not found with username: " + username);
         }else {
-            System.out.println("User found with username: " + username);
+            log.info("User found with username: " + username);
+
+            List<String> permissions = userPermissionMapper.getPermissionsByUserId(user.getId());
+
+            Collection<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(permissions);
+            MyUser myUser = new MyUser(user, authorityList);
 
 
-            Collection<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
-
-            return new org.springframework.security.core.userdetails.User(
-                    user.getAccount(),      //username
-                    //TODO:临时方案，后续需要加密密码
-                    "{noop}"+user.getPassword(),     //password
-                    true,                  //enabled
-                    true,                  //用户账号是否未过期
-                    true,                  //用户凭证（密码）是否未过期
-                    true,                  //账户是否未锁定
-                    authorityList            //权限列表
-            );
+            //TODO:临时方案，之后数据库中密码加密
+            myUser.setPassword("{noop}"+user.getPassword());
+            return myUser;
         }
     }
 }

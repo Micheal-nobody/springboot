@@ -6,6 +6,7 @@ import com.example.demo.pojo.Club;
 import com.example.demo.pojo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,6 +19,7 @@ public class ClubController {
     private ClubService clubService;
 
     @GetMapping("/getById/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public Result getById(@PathVariable Long id) {
         Club club = clubService.getById(id);
 
