@@ -17,14 +17,15 @@ public class QuestionController {
     @Autowired
     FormService formService;
 
-
     @PostMapping("/add")
     public Result addQuestion(@RequestBody Question question){
+        log.info("add question" + question);
         return Result.success(formService.addQuestion(question));
     }
 
     @DeleteMapping("/delete/{id}")
     public Result deleteQuestion(@PathVariable Long id) {
+        log.info("delete question" + id);
         formService.deleteQuestionsById(id);
         return Result.success();
     }

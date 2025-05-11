@@ -9,7 +9,6 @@ import java.util.List;
 @Mapper
 public interface FormMapper {
 
-    public List<Form> getAllForms();
 
 //    按照clubId查询
     public List<Form> getByClubId(Long clubId);
@@ -40,4 +39,6 @@ public interface FormMapper {
 
     @Update("UPDATE forms SET status = #{status} WHERE id = #{id}")
     public void updateStatus(Long id, FormStatus status);
+
+    Form getFormById(Long id);
 }

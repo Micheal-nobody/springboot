@@ -2,7 +2,6 @@ package com.example.demo.Config;
 
 import com.example.demo.Config.Security.*;
 import com.example.demo.Filter.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,18 +33,11 @@ public class WebSecurityConfig{
         // 配置session管理策略，禁用session，因为要使用JWT
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        //! 配置认证
-//        http.authorizeHttpRequests(auth -> auth
-//                    .requestMatchers("/login/**").permitAll() // 允许登录接口公开访问
-//                        .requestMatchers("/api/club/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-//                        .requestMatchers("/api/form/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-//                        .requestMatchers("/api/form/delete/**").access(new WebExpressionAuthorizationManager("#id == authentication.principal.id"))
-//                        .requestMatchers("/api/file/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-//                    .anyRequest().authenticated() // 其他请求需要认证
-//                );
-
-        //测试阶段，允许所有请求访问
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        // 配置认证
+        http.authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/login/**").permitAll() // 允许登录接口公开访问
+                    .anyRequest().authenticated() // 其他请求需要认证
+                );
 
 
         // 配置登录，默认使用UsernamePasswordAuthenticationFilter

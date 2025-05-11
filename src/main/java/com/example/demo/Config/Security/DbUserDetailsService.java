@@ -21,9 +21,10 @@ import java.util.List;
 public class DbUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private  UserMapper userMapper;
+    private UserMapper userMapper;
     @Autowired
     private UserPermissionMapper userPermissionMapper;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,7 +34,7 @@ public class DbUserDetailsService implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException("User not found with username: " + username);
         }else {
-            log.info("User found with username: " + username);
+            log.info("User found with username: {}", username);
 
             List<String> permissions = userPermissionMapper.getPermissionsByUserId(user.getId());
 

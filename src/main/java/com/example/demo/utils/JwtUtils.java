@@ -36,18 +36,11 @@ public class JwtUtils {
                 .compact();
     }
 
-    public static Map<String, Object> parseJwt(String jwtToken) {
-        try {
-
+    public static Map<String, Object> parseJwt(String jwtToken) throws JwtException,IllegalArgumentException {
             return Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(jwtToken)
                     .getPayload();
-
-        } catch (Exception e) {
-            log.error("JWT校验失败", e);
-            return Map.of();
-        }
     }
 }

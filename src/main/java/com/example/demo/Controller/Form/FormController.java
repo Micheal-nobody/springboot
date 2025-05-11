@@ -5,6 +5,7 @@ import com.example.demo.pojo.Form.Form;
 import com.example.demo.pojo.Result;
 import com.example.demo.Service.Form.FormService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,31 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 public class FormController {
 
-    private final FormService formService;
+    @Autowired
+    private FormService formService;
 
-    public FormController(FormService formService) {
-        this.formService = formService;
+    //TODO:实现参数的校验！！！
+
+    @GetMapping("/{id}")
+    public Result getFormById(@PathVariable Long id) {
+        Form form = formService.getFormById(id);
+        return Result.success(form);
     }
 
     //region 各种GET请求
-    @GetMapping("/getClubs")
-    public Result test() {
-        System.out.println("test");
-        return Result.success();
-    }
-
 //
     @GetMapping("/getByClubId/{clubId}")
     public Result getByClubId(@PathVariable Long clubId) {
         return Result.success(formService.getByClubId(clubId));
     }
 
-//    返回所有表单
-    @GetMapping("/getAll")
-    public Result getAllForms() {
-        System.out.println(" getAllForms ");
-        return Result.success(formService.getAllForms());
-    }
 
 //    获得所有提交的表单
     @GetMapping("/getSubmitted")
@@ -82,7 +76,7 @@ public class FormController {
         return Result.success(result);
     }
 
-    //    删除表单
+    //TODO:    删除表单
     @DeleteMapping("/delete/{id}")
     public Result deleteForm(@PathVariable Long id) {
         formService.deleteFormById(id);

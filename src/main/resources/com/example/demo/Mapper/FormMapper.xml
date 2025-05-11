@@ -3,103 +3,130 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
 <mapper namespace="com.example.demo.Mapper.FormMapper">
 
-    <resultMap id="FormResultMap" type="com.example.demo.pojo.Form.Form">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="clubId" column="club_id"/>
-        <result property="clubName" column="club_name"/>
-        <result property="createdTime" column="created_time"/>
-        <result property="updatedTime" column="updated_time"/>
-        <result property="isDeleted" column="is_deleted"/>
-        <result property="status" column="status"/>
-        <collection property="questions" resultMap="QuestionResultMap" columnPrefix="question_"/>
-    </resultMap>
-
-    <resultMap id="QuestionResultMap" type="com.example.demo.pojo.Form.Question">
-        <id property="id" column="id"/>
-        <result property="formId" column="form_id"/>
-        <result property="type" column="type"/>
-        <result property="title" column="title"/>
-        <result property="titleImg" column="title_img"/>
-        <result property="sortOrder" column="sort_order"/>
-        <result property="isRequired" column="required"/>
-        <result property="isDeleted" column="is_deleted"/>
-        <collection property="options" resultMap="OptionResultMap" columnPrefix="option_"/>
-    </resultMap>
-
-    <resultMap id="OptionResultMap" type="com.example.demo.pojo.Form.Option">
-        <id property="id" column="id"/>
-        <result property="value" column="value"/>
-        <result property="url" column="url"/>
-        <result property="sortOrder" column="sort_order"/>
-        <result property="isDeleted" column="is_deleted"/>
-    </resultMap>
-
-    <sql id="complete_form">
+    <!-- 提取公共JOIN查询 -->
+    <sql id="formJoinQuery">
         SELECT
-            f.id AS id,
-            f.name AS name,
-            f.club_id AS club_id,
-            c.name AS club_name,
-            f.created_time AS created_time,
-            f.updated_time AS updated_time,
-            f.is_deleted AS is_deleted,
-            f.status AS status,
-            q.id AS question_id,
-            q.form_id AS question_form_id,
-            q.type AS question_type,
-            q.title AS question_title,
-            q.title_img AS question_title_img,
-            q.sort_order AS question_sort_order,
-            q.is_required AS question_required,
-            q.is_deleted AS question_is_deleted,
-            o.id AS question_option_id,
-            o.value AS question_option_value,
-            o.url AS question_option_url,
-            o.sort_order AS question_option_sort_order,
-            o.is_deleted AS question_option_is_deleted
+            f.id,
+            f.name,
+            f.club_id,
+            f.created_time,
+            f.updated_time,
+            f.is_deleted,
+            f.status,
+
+            q.id AS q_id,
+            q.type AS q_type,
+            q.form_id AS q_form_id,
+            q.question_text AS q_question_text,
+            q.sort_order AS q_sort_order,
+            q.is_required AS q_is_required,
+            q.is_deleted AS q_is_deleted,
+
+            fq.id AS q_fq_id,
+            fq.file_name AS q_fq_file_name,
+            fq.mime_type AS q_fq_mime_type,
+            fq.file_data AS q_fq_file_data,
+            fq.related_id AS q_fq_related_id,
+            fq.related_type AS q_fq_related_type,
+            fq.sort_order AS q_fq_sort_order,
+            fq.create_time AS q_fq_create_time,
+
+            o.id AS q_o_id,
+            o.option_text AS q_o_option_text,
+            o.sort_order AS q_o_sort_order,
+            o.is_deleted AS q_o_is_deleted,
+            o.question_id AS q_o_question_id,
+
+            fo.id AS q_o_fo_id,
+            fo.file_name AS q_o_fo_file_name,
+            fo.mime_type AS q_o_fo_mime_type,
+            fo.file_data AS q_o_fo_file_data,
+            fo.related_id AS q_o_fo_related_id,
+            fo.related_type AS q_o_fo_related_type,
+            fo.sort_order AS q_o_fo_sort_order,
+            fo.create_time AS q_o_fo_create_time
+
         FROM forms f
-                 LEFT JOIN clubs c ON f.club_id = c.id AND c.is_deleted = 0
-                 LEFT JOIN questions q ON f.id = q.form_id AND q.is_deleted = 0
-                 LEFT JOIN options o ON q.id = o.question_id AND o.is_deleted = 0
-    </sql>
-    <sql id="default_form_order">
-        ORDER BY f.updated_time DESC, q.sort_order ASC, o.sort_order ASC;
-    </sql>
-
-
-    <select id="getAllForms" resultType="com.example.demo.pojo.Form.Form">
-        <include refid="complete_form"/>
+                 LEFT JOIN questions q
+                           ON f.id = q.form_id
+                               AND q.is_deleted = 0
+                 LEFT JOIN options o
+                           ON q.id = o.question_id
+                               AND o.is_deleted = 0
+                 LEFT JOIN files fq
+                           ON q.id = fq.related_id
+                               AND fq.related_type = 'question'
+                 LEFT JOIN files fo
+                           ON o.id = fo.related_id
+                               AND fo.related_type = 'option'
         WHERE f.is_deleted = 0
-        <include refid="default_form_order"/>
+    </sql>
+    
+    <sql id="normalOrder">
+        ORDER BY q.sort_order, o.sort_order
+    </sql>
+
+
+    <!-- 主结果映射 -->
+    <resultMap id="FormResultMap" type="com.example.demo.pojo.Form.Form" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="questions" ofType="com.example.demo.pojo.Form.Question" columnPrefix="q_"
+                    resultMap="QuestionResultMap" column="id"/>
+    </resultMap>
+
+    <!-- Question结果映射 -->
+    <resultMap id="QuestionResultMap" type="com.example.demo.pojo.Form.Question" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="questionAttachments" ofType="com.example.demo.pojo.File" columnPrefix="fq_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+        <collection property="options" ofType="com.example.demo.pojo.Form.Option" columnPrefix="o_"
+                    resultMap="OptionResultMap"/>
+    </resultMap>
+
+    <!-- Option结果映射 -->
+    <resultMap id="OptionResultMap" type="com.example.demo.pojo.Form.Option" autoMapping="true">
+        <id property="id" column="id"/>
+        <result property="questionId" column="question_id"/>
+        <collection property="optionAttachments" ofType="com.example.demo.pojo.File" columnPrefix="fo_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+    </resultMap>
+
+
+
+    <!-- 通用查询方法 -->
+    <select id="selectFormById" resultMap="FormResultMap">
+        <include refid="formJoinQuery"/>
+        AND f.id = #{id}
     </select>
 
     <select id="getByClubId" resultMap="FormResultMap">
-        <include refid="complete_form"/>
-        WHERE f.club_id = #{clubId} AND f.is_deleted = 0
-        <include refid="default_form_order"/>
+        <include refid="formJoinQuery"/>
+        AND f.club_id = #{clubId}
+        <include refid="normalOrder"/>
     </select>
 
-
-    <select id="getFormByStatus" resultMap="FormResultMap">
-        <include refid="complete_form"/>
-        WHERE f.status = #{status} AND f.is_deleted = 0
-        <include refid="default_form_order"/>
+    <select id="getFormByStatus" resultType="com.example.demo.pojo.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.status = #{status}
     </select>
 
-    <select id="getSubmittedForms" resultMap="FormResultMap">
-        <include refid="complete_form"/>
-        WHERE f.status != #{status} AND f.is_deleted = 0
-        <include refid="default_form_order"/>
+    <select id="getSubmittedForms" resultType="com.example.demo.pojo.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.status = #{status} AND f.updated_time > DATE_SUB(NOW(), INTERVAL 1 HOUR)
     </select>
-
 
     <select id="getFormsByName" resultType="com.example.demo.pojo.Form.Form">
-        <include refid="complete_form"/>
-        WHERE f.name LIKE CONCAT('%', #{name}, '%') AND f.is_deleted = 0
-        <include refid="default_form_order"/>
+        <include refid="formJoinQuery"/>
+        AND f.name LIKE CONCAT('%', #{name}, '%')
     </select>
 
+    <select id="getFormById" resultType="com.example.demo.pojo.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.id = #{id}
+    </select>
 </mapper>
