@@ -1,12 +1,9 @@
 package com.example.demo.pojo.ENUM;
 
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public enum CLubCategory {
+public enum ClubCategory {
     SCIENCE("SCIENCE"),
     ARTISTIC("ARTISTIC"),
     SPORTS("SPORTS"),
@@ -15,4 +12,8 @@ public enum CLubCategory {
 
     private final String category;
 
+    // 私有构造函数
+    private ClubCategory(String category) {
+        this.category = category;
+    }
 }

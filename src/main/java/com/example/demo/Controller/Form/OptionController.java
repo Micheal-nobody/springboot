@@ -20,7 +20,7 @@ public class OptionController {
 
     @PostMapping("/add")
     public Result addOption(@RequestBody Option option) {
-        System.out.println("addOption");
+        log.info("addOption: " + option);
         return Result.success(formService.addOption(option));
     }
 

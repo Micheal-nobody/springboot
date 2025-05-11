@@ -1,11 +1,9 @@
 package com.example.demo.pojo.ENUM;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum FormStatus {
     DRAFT("DRAFT"),
     SUBMITTED("SUBMITTED"),
@@ -14,4 +12,9 @@ public enum FormStatus {
 
 
     private final String status;
+
+    private FormStatus(final String status)
+    {
+        this.status = status;
+    }
 }

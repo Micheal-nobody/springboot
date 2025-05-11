@@ -1,10 +1,9 @@
 package com.example.demo.Service;
 
 
-import com.example.demo.Mapper.ClubMapper;
 import com.example.demo.Service.Form.FormService;
+import com.example.demo.mapper.ClubMapper;
 import com.example.demo.pojo.Club;
-import com.example.demo.pojo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +18,11 @@ public class ClubService {
     private ClubMapper clubMapper;
 
     public List<Club> getAllClubs() {
-        return clubMapper.getAllClubs();
+        return clubMapper.selectAll();
     }
 
     public Club getById(Long id) {
-        return clubMapper.getClubById(id);
+        return clubMapper.selectById(id);
     }
 
 //    public Club getClubWithForms(Long clubId) {

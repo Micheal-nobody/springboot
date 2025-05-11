@@ -4,15 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-
-<mapper namespace="com.example.demo.Mapper.QuestionsMapper">
+<mapper namespace="com.example.demo.mapper.QuestionsMapper">
 
     <select id="getQuestionsByFormId" resultType="com.example.demo.pojo.Form.Question">
         SELECT * FROM questions WHERE form_id = #{formId}
+        ORDER BY sort_order
     </select>
 
     <select id="getAllQuestions" resultType="com.example.demo.pojo.Form.Question">
         SELECT * FROM questions
+        ORDER BY form_id, sort_order
     </select>
 
 

@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.demo.Mapper.*;
+import com.example.demo.mapper.UserPermissionMapper;
 import com.example.demo.utils.JwtUtils;
 import org.junit.jupiter.api.Test;
 

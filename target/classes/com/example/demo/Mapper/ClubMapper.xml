@@ -3,13 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.Mapper.ClubMapper">
+<mapper namespace="com.example.demo.mapper.ClubMapper">
 
     <resultMap id="ClubResultMap" type="com.example.demo.pojo.Club">
         <id property="id" column="club_id"/>
         <result property="name" column="club_name"/>
         <result property="description" column="club_description"/>
-        <result property="coverImage" column="club_cover_image"/>
         <result property="category" column="club_category"/>
         <result property="leaderId" column="club_leader_id"/>
         <result property="createTime" column="club_create_time"/>

@@ -1,7 +1,7 @@
 package com.example.demo.Config.Security;
 
-import com.example.demo.Mapper.UserMapper;
-import com.example.demo.Mapper.UserPermissionMapper;
+import com.example.demo.mapper.UserMapper;
+import com.example.demo.mapper.UserPermissionMapper;
 import com.example.demo.pojo.MyUser;
 import com.example.demo.pojo.User;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +21,10 @@ import java.util.List;
 public class DbUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private  UserMapper userMapper;
+    private UserMapper userMapper;
     @Autowired
     private UserPermissionMapper userPermissionMapper;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,7 +34,7 @@ public class DbUserDetailsService implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException("User not found with username: " + username);
         }else {
-            log.info("User found with username: " + username);
+//            log.info("User found with username: {}", username);
 
             List<String> permissions = userPermissionMapper.getPermissionsByUserId(user.getId());
 

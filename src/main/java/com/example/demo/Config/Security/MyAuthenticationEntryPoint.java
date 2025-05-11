@@ -31,6 +31,7 @@ public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint
         // 将结果转为json字符串
         String json = JSON.toJSONString(result);
 
+
         //返回json数据给前端
         //TODO:测试使用，之后记得取消注释
 //        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

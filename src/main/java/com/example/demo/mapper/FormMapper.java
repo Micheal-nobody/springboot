@@ -1,4 +1,4 @@
-package com.example.demo.Mapper;
+package com.example.demo.mapper;
 
 import com.example.demo.pojo.ENUM.FormStatus;
 import com.example.demo.pojo.Form.Form;
@@ -7,9 +7,8 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface FormMapper {
+public interface FormMapper{
 
-    public List<Form> getAllForms();
 
 //    按照clubId查询
     public List<Form> getByClubId(Long clubId);
@@ -40,4 +39,6 @@ public interface FormMapper {
 
     @Update("UPDATE forms SET status = #{status} WHERE id = #{id}")
     public void updateStatus(Long id, FormStatus status);
+
+    Form getFormById(Long id);
 }

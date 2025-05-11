@@ -1,10 +1,8 @@
 package com.example.demo.pojo.ENUM;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum MimeType {
     PDF("application/pdf"),
     WORD("application/sword"),
@@ -47,4 +45,8 @@ public enum MimeType {
 
 
     private final String type;
+
+    private MimeType(String type){
+        this.type = type;
+    }
 }
