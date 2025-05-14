@@ -9,16 +9,15 @@ import java.util.List;
 @Mapper
 public interface OptionsMapper{
 
-    @Select("SELECT id, url, value, sort_order FROM options")
-    public List<Option> getAllOptions();
-
+    //查询
     @Select("SELECT * FROM options WHERE question_id = #{id} ORDER BY sort_order")
-    public List<Option> getOptionByQuestionId(Long id);
+    List<Option> getOptionByQuestionId(Long id);
 
 //    更新数据
-    @Update("UPDATE options SET url = #{url}, value = #{value}, sort_order = #{sortOrder},is_deleted = #{isDeleted} WHERE id = #{id}")
-    public void updateOption(Option option);
+    @Update("UPDATE options SET question_id = #{questionId}, option_text = #{optionText}, sort_order = #{sortOrder} WHERE id = #{id}")
+    void updateOption(Option option);
 
+    //删除数据
     @Delete("DELETE FROM options WHERE question_id = #{questionId}")
     void deleteOptionsByQuestionId(Long questionId);
 

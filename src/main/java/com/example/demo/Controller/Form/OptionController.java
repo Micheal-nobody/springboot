@@ -2,6 +2,7 @@ package com.example.demo.Controller.Form;
 
 
 import com.example.demo.Service.Form.FormService;
+import com.example.demo.Service.Form.OptionService;
 import com.example.demo.pojo.Form.Option;
 import com.example.demo.pojo.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -16,18 +17,28 @@ public class OptionController {
 
     @Autowired
     FormService formService;
+    @Autowired
+    OptionService optionService;
 
-
+    //添加选项
     @PostMapping("/add")
     public Result addOption(@RequestBody Option option) {
-        log.info("addOption: " + option);
         return Result.success(formService.addOption(option));
     }
 
+    //删除选项
     @DeleteMapping("/delete/{id}")
     public Result deleteOption(@PathVariable Long id) {
-        System.out.println("deleteOption" + id);
         formService.deleteOptionsById(id);
+        return Result.success();
+    }
+
+    //更新选项
+    @PutMapping("/update")
+    public Result updateOption(@RequestBody Option option) {
+
+        optionService.updateOption(option);
+
         return Result.success();
     }
 }

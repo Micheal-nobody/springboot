@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 
+import com.example.demo.pojo.DTO.QuestionDTO;
 import com.example.demo.pojo.Form.Question;
 import org.apache.ibatis.annotations.*;
 
@@ -11,19 +12,26 @@ import java.util.List;
 public interface QuestionsMapper {
 
 //    @Select("SELECT * FROM questions")
-    public List<Question> getAllQuestions();
+    List<Question> getAllQuestions();
 
-    public List<Question> getQuestionsByFormId(Long formId);
+    List<Question> getQuestionsByFormId(Long formId);
+
+    @Select("SELECT id FROM questions WHERE form_id = #{formId}")
+    List<Long> getQuestionIdsByFormId(Long id);
 
 //    更新问题
     @Update("UPDATE questions SET form_id = #{formId}, type = #{type}, question_text = #{questionText}, sort_order = #{sortOrder}, is_required = #{isRequired}, is_deleted = #{isDeleted} WHERE id = #{id}")
-    public int updateQuestion(Question question);
+    int updateQuestion(Question question);
+
+    //使用xml动态SQL更新问题
+    void updateQuestionDTO(QuestionDTO questionDTO);
+
+
 
     @Delete("DELETE FROM questions WHERE form_id = #{formId}")
     void deleteQuestionsByFormId(Long formId);
 
-    @Select("SELECT id FROM questions WHERE form_id = #{formId}")
-    List<Long> getQuestionIdsByFormId(Long id);
+
 
     @Delete("DELETE FROM questions WHERE id = #{id}")
     void deleteQuestionById(Long id);

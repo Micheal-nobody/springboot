@@ -21,6 +21,7 @@ import java.util.List;
 
 
 @Service
+@Transactional
 public class FormService {
 
     private static final Logger log = LoggerFactory.getLogger(FormService.class);
@@ -48,11 +49,18 @@ public class FormService {
     }
 
     public Question addQuestion(Question question) {
+
+        log.info("add question" + question);
+
+
         questionsMapper.addQuestion(question);
         return question;
     }
 
     public Option addOption(Option option) {
+
+        log.info("addOption: " + option);
+
         optionsMapper.addOption(option);
         return option;
     }
@@ -75,6 +83,9 @@ public class FormService {
 
     @Transactional
     public void deleteQuestionsById(Long id) {
+
+        log.info("delete question" + id);
+
         // 获取表单id
         Long formId = questionsMapper.getFormIdByQuestionId(id);
 
@@ -134,11 +145,14 @@ public class FormService {
 //    更新表单
     @Transactional
     public void updateForm(Form form) {
+
+        log.info("update form: {} " , form);
+
 //        首先更新表单信息
         form.setUpdatedTime(LocalDateTime.now());
         formMapper.updateForm(form);
 
-        System.out.println("form updated");
+
 //        然后更新表单下的所有问题
         for (Question question : form.getQuestions()) {
             question.setFormId(form.getId());
@@ -184,9 +198,7 @@ public class FormService {
     //region 查
     public List<Form> getByClubId(Long clubId) {
 
-        List<Form> forms = formMapper.getByClubId(clubId);
-
-        return forms;
+        return formMapper.getByClubId(clubId);
     }
 
     public List<Form> getFormsByStatus(FormStatus status) {
@@ -216,7 +228,5 @@ public class FormService {
     }
 
     //endregion
-
-
 
 }

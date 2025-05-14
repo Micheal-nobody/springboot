@@ -17,5 +17,16 @@
     </select>
 
 
+    <!-- 动态SQL修改Questions表数据 -->
+    <update id="updateQuestionDTO">
+        UPDATE questions
+        <set>
+            <if test="questionText!= null">question_text = #{questionText},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="isRequired != null">is_required = #{isRequired},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
 
 </mapper>

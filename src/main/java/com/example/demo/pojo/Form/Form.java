@@ -1,9 +1,7 @@
 package com.example.demo.pojo.Form;
 
 
-import com.example.demo.Serializer.FormSerializer;
 import com.example.demo.pojo.ENUM.FormStatus;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,8 +23,8 @@ public class Form {
     private LocalDateTime updatedTime;
     private Boolean isDeleted;
     private FormStatus status;
-    //确保从数据库出来后就是空ArrayList，而不是null
     private List<Question> questions = new ArrayList<>();
+
 }
 
 

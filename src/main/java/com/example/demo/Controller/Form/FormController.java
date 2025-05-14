@@ -19,7 +19,6 @@ public class FormController {
     private FormService formService;
 
     //TODO:实现参数的校验！！！
-
     @GetMapping("/{id}")
     public Result getFormById(@PathVariable Long id) {
         Form form = formService.getFormById(id);
@@ -82,7 +81,6 @@ public class FormController {
         return Result.success();
     }
 
-
     //endregion
 
 
@@ -93,4 +91,12 @@ public class FormController {
         return null;
     }
 
+    //PATCH请求，更新单个表单
+    @PutMapping("/update/{id}")
+    public Result updateForm(@PathVariable Long id, @RequestBody Form form) {
+        form.setId(id);
+        //TODO:这个方法对！
+        formService.updateForm(form);
+        return Result.success();
+    }
 }

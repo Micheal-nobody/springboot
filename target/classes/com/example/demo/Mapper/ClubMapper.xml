@@ -17,10 +17,8 @@
     </resultMap>
 
 
-
     <select id="getClubIdsByName" resultType="java.lang.Long">
         SELECT id FROM clubs WHERE name LIKE CONCAT(#{clubName}, '%')
     </select>
-
 
 </mapper>
