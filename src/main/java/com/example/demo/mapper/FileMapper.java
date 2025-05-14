@@ -12,13 +12,13 @@ public interface FileMapper {
     @Select("SELECT * FROM files WHERE id = #{id}")
     File getFileById(Long id);
 
-    @Select("SELECT * FROM files WHERE relared_id = #{relatedId} related_type = #{relatedType}")
+    @Select("SELECT * FROM files WHERE related_id = #{relatedId} AND related_type = #{relatedType}")
     List<File> getFilesByRelatedAttr(Long relatedId, String relatedType);
 
-    @Delete("DELETE ")
+    @Delete("DELETE FROM files WHERE id = #{id} ")
     void deleteFileById(Long id);
 
-    @Update("UPDATE sort_Order ")
+    @Update("UPDATE files SET sort_Order = #{sortOrder} WHERE id = #{id}")
     void updateFileSortOrder(File f);
 
     @Insert("")
