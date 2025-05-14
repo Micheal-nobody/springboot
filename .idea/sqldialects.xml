@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/mapper/FormMapper.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/mapper/QuestionsMapper.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/mapper/UserMapper.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/mapper/UserPermissionMapper.java" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/com/example/demo/mapper/ClubMapper.xml" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/com/example/demo/mapper/FormMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/Mapper/FormMapper.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/Mapper/QuestionsMapper.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/Mapper/UserMapper.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/Mapper/UserPermissionMapper.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/com/example/demo/Mapper/ClubMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/com/example/demo/Mapper/FormMapper.xml" dialect="GenericSQL" />
   </component>
 </project>
