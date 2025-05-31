@@ -1,0 +1,38 @@
+
+#spring 配置
+spring:
+  application:
+    name: myProject
+
+  # MySQL数据库配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/mybatis
+    username: mybatis
+    password: mybatis
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  #redis数据库配置
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+
+#mybatisplus 配置
+mybatis-plus:
+  global-config:
+
+    #    启动软删除
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+    # xml 位置
+  mapper-locations: classpath*:com/example/demo/Mapper/*.xml
