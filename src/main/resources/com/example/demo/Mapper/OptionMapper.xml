@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.Mapper.OptionsMapper">
+
+    <!-- 动态SQL修改Questions表数据 -->
+    <update id="updateOptionDTO">
+        UPDATE  options
+        <set>
+            <if test="optionText!= null">option_text = #{optionText},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 动态SQL修改 Option sort_order -->
+    <update id="updateOptionSortOrders">
+        UPDATE options
+        <trim prefix="SET sort_order = CASE id" suffix="END WHERE id IN">
+            <foreach collection="list" item="optionDTO">
+                WHEN #{optionDTO.id} THEN #{optionDTO.sortOrder}
+            </foreach>
+        </trim>
+        <trim prefix="(" suffix=")">
+            <foreach collection="list" item="optionDTO" open="" separator="," close="">
+                #{optionDTO.id}
+            </foreach>
+        </trim>
+    </update>
+
+</mapper>

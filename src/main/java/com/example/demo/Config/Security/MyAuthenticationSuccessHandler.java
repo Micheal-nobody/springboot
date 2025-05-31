@@ -1,6 +1,6 @@
 package com.example.demo.Config.Security;
 
-import com.example.demo.pojo.MyUser;
+import com.example.demo.pojo.Entity.MyUser;
 import com.example.demo.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

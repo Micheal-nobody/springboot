@@ -2,7 +2,7 @@ package com.example.demo.Controller.Form;
 
 import com.example.demo.Service.Form.FormService;
 import com.example.demo.pojo.ENUM.FormStatus;
-import com.example.demo.pojo.Form.Form;
+import com.example.demo.pojo.Entity.Form.Form;
 import com.example.demo.pojo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ public class FormController {
         Form form = formService.getFormById(id);
         return Result.success(form);
     }
+
 
     //region 各种GET请求
 //

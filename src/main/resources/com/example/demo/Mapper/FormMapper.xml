@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.Mapper.FormMapper">
+
+    <!-- 提取公共JOIN查询 -->
+    <sql id="formJoinQuery">
+        SELECT
+            f.id,
+            f.name,
+            f.club_id,
+            f.created_time,
+            f.updated_time,
+            f.is_deleted,
+            f.status,
+
+            q.id AS q_id,
+            q.type AS q_type,
+            q.form_id AS q_form_id,
+            q.question_text AS q_question_text,
+            q.sort_order AS q_sort_order,
+            q.is_required AS q_is_required,
+            q.is_deleted AS q_is_deleted,
+
+            fq.id AS q_fq_id,
+            fq.file_name AS q_fq_file_name,
+            fq.mime_type AS q_fq_mime_type,
+            fq.file_data AS q_fq_file_data,
+            fq.related_id AS q_fq_related_id,
+            fq.related_type AS q_fq_related_type,
+            fq.sort_order AS q_fq_sort_order,
+            fq.create_time AS q_fq_create_time,
+
+            o.id AS q_o_id,
+            o.option_text AS q_o_option_text,
+            o.sort_order AS q_o_sort_order,
+            o.is_deleted AS q_o_is_deleted,
+            o.question_id AS q_o_question_id,
+
+            fo.id AS q_o_fo_id,
+            fo.file_name AS q_o_fo_file_name,
+            fo.mime_type AS q_o_fo_mime_type,
+            fo.file_data AS q_o_fo_file_data,
+            fo.related_id AS q_o_fo_related_id,
+            fo.related_type AS q_o_fo_related_type,
+            fo.sort_order AS q_o_fo_sort_order,
+            fo.create_time AS q_o_fo_create_time
+
+        FROM forms f
+                 LEFT JOIN questions q
+                           ON f.id = q.form_id
+                               AND q.is_deleted = 0
+                 LEFT JOIN options o
+                           ON q.id = o.question_id
+                               AND o.is_deleted = 0
+                 LEFT JOIN files fq
+                           ON q.id = fq.related_id
+                               AND fq.related_type = 'question'
+                 LEFT JOIN files fo
+                           ON o.id = fo.related_id
+                               AND fo.related_type = 'option'
+        WHERE f.is_deleted = 0
+    </sql>
+
+    <sql id="normalOrder">
+        ORDER BY q.sort_order, o.sort_order
+    </sql>
+
+    <!-- 主结果映射 -->
+    <resultMap id="FormResultMap" type="com.example.demo.pojo.Entity.Form.Form" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="questions" ofType="com.example.demo.pojo.Entity.Form.Question" columnPrefix="q_"
+                    resultMap="QuestionResultMap" column="id"/>
+    </resultMap>
+
+    <!-- Question结果映射 -->
+    <resultMap id="QuestionResultMap" type="com.example.demo.pojo.Entity.Form.Question" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="questionAttachments" ofType="com.example.demo.pojo.Entity.File" columnPrefix="fq_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+        <collection property="options" ofType="com.example.demo.pojo.Entity.Form.Option" columnPrefix="o_"
+                    resultMap="OptionResultMap"/>
+    </resultMap>
+
+    <!-- Option结果映射 -->
+    <resultMap id="OptionResultMap" type="com.example.demo.pojo.Entity.Form.Option" autoMapping="true">
+        <id property="id" column="id"/>
+        <result property="questionId" column="question_id"/>
+        <collection property="optionAttachments" ofType="com.example.demo.pojo.Entity.File" columnPrefix="fo_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+    </resultMap>
+
+
+
+    <!-- 通用查询方法 -->
+    <select id="selectFormById" resultMap="FormResultMap">
+        <include refid="formJoinQuery"/>
+        AND f.id = #{id}
+    </select>
+
+    <select id="getByClubId" resultMap="FormResultMap">
+        <include refid="formJoinQuery"/>
+        AND f.club_id = #{clubId}
+        <include refid="normalOrder"/>
+    </select>
+
+    <select id="getFormByStatus" resultType="com.example.demo.pojo.Entity.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.status = #{status}
+    </select>
+
+    <select id="getSubmittedForms" resultType="com.example.demo.pojo.Entity.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.status = #{status} AND f.updated_time > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    </select>
+
+    <select id="getFormsByName" resultType="com.example.demo.pojo.Entity.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="getFormById" resultType="com.example.demo.pojo.Entity.Form.Form">
+        <include refid="formJoinQuery"/>
+        AND f.id = #{id}
+    </select>
+
+</mapper>

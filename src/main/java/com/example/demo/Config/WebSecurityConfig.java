@@ -1,7 +1,6 @@
 package com.example.demo.Config;
 
 import com.example.demo.Config.Security.*;
-import com.example.demo.Filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -21,7 +19,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig{
-
 
 //   实际上是在配置FilterChainProxy中的 securityFilterChain bean
     @Bean
@@ -34,9 +31,10 @@ public class WebSecurityConfig{
         http.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // 配置认证
+        //TODO:permitALl
         http.authorizeHttpRequests(auth -> auth
                     .requestMatchers("/login/**").permitAll() // 允许登录接口公开访问
-                    .anyRequest().authenticated() // 其他请求需要认证
+                    .anyRequest().permitAll() // 其他请求需要认证
                 );
 
 
@@ -67,17 +65,19 @@ public class WebSecurityConfig{
         http.httpBasic(AbstractHttpConfigurer::disable); // 禁用HTTP Basic认证
 
         // 添加JWT过滤器到UsernamePasswordAuthenticationFilter之前
-        http.addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();
     }
 
-//    自动调用DBUserDetailsManager的loadUserByUsername方法，从数据库中获取用户信息
+
+
 //    本质是配置了DaoAuthenticationProvider的bean，相当于：new DaoAuthenticationProvider().setUserDetailsService(userDetailsService());
     public UserDetailsService userDetailsService() {
         return new DbUserDetailsService(); // 使用数据库用户详情服务
     }
+
 
 //    调用AuthenticationManager的authenticate方法，进行登录验证
     @Bean

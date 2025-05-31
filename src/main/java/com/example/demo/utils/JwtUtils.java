@@ -1,14 +1,17 @@
 package com.example.demo.utils;
 
 
-import com.example.demo.pojo.MyUser;
-import io.jsonwebtoken.*;
+import com.example.demo.pojo.Entity.MyUser;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.crypto.SecretKey;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 

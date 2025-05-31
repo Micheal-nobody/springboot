@@ -1,14 +1,17 @@
 package com.example.demo.Service;
 
 
+import com.example.demo.Mapper.ClubMapper;
 import com.example.demo.Service.Form.FormService;
-import com.example.demo.mapper.ClubMapper;
-import com.example.demo.pojo.Club;
+import com.example.demo.pojo.DTO.ClubDTO;
+import com.example.demo.pojo.Entity.Club;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ClubService {
     @Autowired
@@ -18,17 +21,15 @@ public class ClubService {
     private ClubMapper clubMapper;
 
     public List<Club> getAllClubs() {
-        return clubMapper.selectAll();
+        return clubMapper.selectList(null);
     }
 
     public Club getById(Long id) {
         return clubMapper.selectById(id);
     }
 
-//    public Club getClubWithForms(Long clubId) {
-//        Club club = clubMapper.getClubById(clubId);
-//        club.setForms(formService.getFormsByClubId(clubId));
-//        return club;
-//    }
 
+    public ClubDTO getWithFormById(Long id) {
+        return clubMapper.selectWithFormById(id);
+    }
 }

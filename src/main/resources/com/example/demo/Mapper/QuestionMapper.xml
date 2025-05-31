@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.demo.Mapper.QuestionsMapper">
+
+    <resultMap id="QuestionDTOMap" type="com.example.demo.pojo.DTO.QuestionDTO" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="questionAttachments" ofType="com.example.demo.pojo.DTO.FileDTO" columnPrefix="fq_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+        <collection property="options" ofType="com.example.demo.pojo.DTO.OptionDTO" columnPrefix="o_"
+        resultMap="OptionDTOMap" />
+    </resultMap>
+
+    <resultMap id="OptionDTOMap" type="com.example.demo.pojo.DTO.OptionDTO" autoMapping="true">
+        <id property="id" column="id"/>
+        <collection property="optionAttachments" ofType="com.example.demo.pojo.DTO.FileDTO" columnPrefix="fq_" autoMapping="true">
+            <id property="id" column="id"/>
+        </collection>
+    </resultMap>
+
+    <sql id="selectQuestionDTO">
+        SELECT
+            q.id,
+            q.form_id,
+            q.type,
+            q.question_text,
+            q.sort_order,
+            q.is_required,
+
+            fq.id AS fq_id,
+            fq.file_name AS fq_file_name,
+            fq.file_data AS fq_file_data,
+            fq.mime_type AS fq_mime_type,
+            fq.sort_order AS fq_sort_order,
+
+            o.id AS o_id,
+            o.question_id AS o_question_id,
+            o.option_text AS o_option_text,
+            o.sort_order AS o_sort_order,
+
+            fo.id AS o_fo_id,
+            fo.file_name AS o_fo_file_name,
+            fo.file_data AS o_fo_file_data,
+            fo.mime_type AS o_fo_mime_type,
+            fo.sort_order AS o_fo_sort_order
+        FROM questions q
+            LEFT JOIN options o
+                ON q.id = o.question_id AND q.is_deleted = false
+            LEFT JOIN files fq
+                  ON q.id = fq.related_id
+                      AND fq.related_type = 'question'
+            LEFT JOIN files fo
+                  ON o.id = fo.related_id
+                      AND fo.related_type = 'option'
+    </sql>
+
+
+
+    <select id="selectQuestionDTOList" resultMap="com.example.demo.Mapper.FormMapper.QuestionResultMap">
+        <include refid="selectQuestionDTO" />
+        ${ew.customSqlSegment}
+    </select>
+
+
+
+    <select id="selectQuestionsByFormId" resultType="com.example.demo.pojo.Entity.Form.Question">
+        SELECT * FROM questions
+                 WHERE form_id = #{formId} AND is_deleted = false
+        ORDER BY sort_order
+    </select>
+
+    <select id="selectAllowedQuestionIds" resultType="java.lang.Long">
+    SELECT questions.id
+    FROM forms f
+    JOIN questions ON questions.form_id = f.id
+    WHERE f.club_id =  #{CludId}
+    </select>
+
+
+    <!-- 动态SQL修改Questions表数据 -->
+    <update id="updateQuestionDTO">
+        UPDATE questions
+        <set>
+            <if test="questionText!= null">question_text = #{questionText},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="isRequired != null">is_required = #{isRequired},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 动态SQL批量修改Questions表数据 -->
+    <update id="updateQuestionSortOrder">
+        UPDATE questions
+        <trim prefix="SET sort_order = CASE id" suffix="END WHERE id IN">
+            <foreach collection="list" item="questionDTO">
+                WHEN #{questionDTO.id} THEN #{questionDTO.sortOrder}
+            </foreach>
+        </trim>
+        <trim prefix="(" suffix=")">
+            <foreach collection="list" item="questionDTO" open="" separator="," close="">
+                #{questionDTO.id}
+            </foreach>
+        </trim>
+    </update>
+
+</mapper>

@@ -1,15 +1,46 @@
 package com.example.demo;
 
-import com.example.demo.mapper.UserPermissionMapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.demo.Mapper.ClubMapper;
+import com.example.demo.Mapper.QuestionsMapper;
+import com.example.demo.Mapper.UserPermissionMapper;
+import com.example.demo.pojo.DTO.QuestionDTO;
+import com.example.demo.pojo.Entity.Form.Question;
 import com.example.demo.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Map;
 
 
-//@SpringBootTest
+@Slf4j
+@SpringBootTest
 class DemoApplicationTests {
+
+    @Autowired
+    ClubMapper clubMapper;
+
+    @Autowired
+    QuestionsMapper questionsMapper;
+
+    @Test
+    void MapperTest() {
+        LambdaQueryWrapper<Question> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Question::getFormId, 103L);
+
+
+        //TODO:为什么数据为空？！！！！
+        List<QuestionDTO> result = questionsMapper.selectQuestionDTOList(wrapper);
+        //这个正常！
+        List<Question> questions = questionsMapper.selectList(wrapper);
+
+        log.info("wrapper:{}",wrapper.getCustomSqlSegment());
+        log.info("Result content:{}",result);
+        log.info("Questions content:{}",questions);
+    }
 
     @Test
     void jwtparser() {

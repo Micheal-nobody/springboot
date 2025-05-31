@@ -1,9 +1,10 @@
 package com.example.demo.Config.Security;
 
-import com.example.demo.mapper.UserMapper;
-import com.example.demo.mapper.UserPermissionMapper;
-import com.example.demo.pojo.MyUser;
-import com.example.demo.pojo.User;
+import com.example.demo.Mapper.QuestionsMapper;
+import com.example.demo.Mapper.UserMapper;
+import com.example.demo.Mapper.UserPermissionMapper;
+import com.example.demo.pojo.Entity.MyUser;
+import com.example.demo.pojo.Entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,8 @@ public class DbUserDetailsService implements UserDetailsService {
     private UserMapper userMapper;
     @Autowired
     private UserPermissionMapper userPermissionMapper;
+    @Autowired
+    private QuestionsMapper questionsMapper;
 
 
     @Override
@@ -39,7 +42,11 @@ public class DbUserDetailsService implements UserDetailsService {
             List<String> permissions = userPermissionMapper.getPermissionsByUserId(user.getId());
 
             Collection<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(permissions);
-            MyUser myUser = new MyUser(user, authorityList);
+
+            //获得允许访问的所有QuestionId
+            List<Long> allowedQuestionIds = questionsMapper.selectAllowedQuestionIds(user.getId());
+
+            MyUser myUser = new MyUser(user, allowedQuestionIds ,authorityList);
 
 
             //TODO:临时方案，之后数据库中密码加密

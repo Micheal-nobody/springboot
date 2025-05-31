@@ -1,7 +1,7 @@
 //package com.example.demo.Config;
 //
 //import com.example.demo.Mapper.UserMapper;
-//import com.example.demo.pojo.User;
+//import com.example.demo.pojo.Entity.User;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
