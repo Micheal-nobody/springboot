@@ -12,7 +12,6 @@ import javax.crypto.SecretKey;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -29,15 +28,18 @@ public class JwtUtils {
         claims.put("userId", principal.getId());
 
         //设置权限，使用GrantedAuthority的getAuthority()方法获取权限字符串
-        claims.put("authorities", authorities.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+//        claims.put("authorities", authorities.stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.toList()));
 
         return Jwts.builder()
                 .claims(claims)
                 .signWith(secretKey)
                 .compact();
     }
+
+
+
 
     public static Map<String, Object> parseJwt(String jwtToken) throws JwtException,IllegalArgumentException {
             return Jwts.parser()

@@ -73,11 +73,16 @@
         ORDER BY sort_order
     </select>
 
+
+    <!-- 根据userId查询allowedQuestionIds -->
     <select id="selectAllowedQuestionIds" resultType="java.lang.Long">
-    SELECT questions.id
-    FROM forms f
-    JOIN questions ON questions.form_id = f.id
-    WHERE f.club_id =  #{CludId}
+        SELECT q.id
+        FROM clubs c
+            LEFT JOIN forms f
+                ON c.id = f.club_id AND f.is_deleted = false
+             LEFT JOIN questions q
+                ON f.id = q.form_id AND q.is_deleted = false
+        WHERE c.leader_id = #{userId} AND c.is_deleted = false
     </select>
 
 

@@ -6,11 +6,14 @@ import com.example.demo.Mapper.QuestionsMapper;
 import com.example.demo.Mapper.UserPermissionMapper;
 import com.example.demo.pojo.DTO.QuestionDTO;
 import com.example.demo.pojo.Entity.Form.Question;
+import com.example.demo.pojo.Entity.MyUser;
+import com.example.demo.pojo.Entity.User;
 import com.example.demo.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,9 @@ class DemoApplicationTests {
 
     @Autowired
     QuestionsMapper questionsMapper;
+
+    @Autowired
+    RedisTemplate< String, Object> redisTemplate;
 
     @Test
     void MapperTest() {
@@ -58,8 +64,7 @@ class DemoApplicationTests {
 
 //        UserPermission userPermission = userPermissionMapper.selectById(1L);
 //        System.out.println(userPermission);
-        List<String> permissions = userPermissionMapper.getPermissionsByUserId(1L);
-
+        String permissions = userPermissionMapper.getPermissionsByUserId(1L);
 
         System.out.println(permissions);
 
@@ -74,6 +79,24 @@ class DemoApplicationTests {
 
         System.out.println(longObj);
         System.out.println(longObj.getClass());
+    }
+
+
+    @Test
+    void redisTest() {
+        User user = new User(33L, "test", 123, "cover", "major", "college", "gender", "account", "password");
+        redisTemplate.opsForValue().set("user-33", new MyUser(user, List.of(1L, 2L, 3L), List.of()));
+        Object object = redisTemplate.opsForValue().get("user-33");
+
+
+
+        if (object instanceof MyUser) {
+            MyUser myUser = (MyUser) object;
+            System.out.println(myUser);
+        } else {
+            // 处理意外类型
+            System.err.println("Unexpected type: " + object.getClass());
+        }
     }
 
 }

@@ -33,7 +33,9 @@ public interface QuestionsMapper extends BaseMapper<Question> {
     //使用动态SQL更新问题排序
     void updateQuestionSortOrder(List<QuestionDTO> questionDTOS);
 
-    List<Long> selectAllowedQuestionIds(Long ClubId);
+
+    //根据权限为club_manager的user_id，查询所有允许访问的QuestionId
+    List<Long> selectAllowedQuestionIds(Long userId);
 
 
     List<QuestionDTO> selectQuestionDTOList(@Param("ew") Wrapper<Question> wrapper);

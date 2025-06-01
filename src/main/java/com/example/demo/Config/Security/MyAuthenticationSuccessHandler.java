@@ -17,6 +17,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
 
 //        返回一个JWT token给前端
         String generatedJwt = JwtUtils.generateJwt((MyUser) authentication.getPrincipal(), authentication.getAuthorities());
+        System.out.println("生成JWT成功:");
         System.out.println(generatedJwt);
 
 

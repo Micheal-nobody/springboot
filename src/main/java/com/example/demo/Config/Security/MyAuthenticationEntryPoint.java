@@ -10,8 +10,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 import java.util.HashMap;
 
-//访问一个需要认证之后才能访问的接口的时，如果没有认证，则会调用此类中的commence方法，返回json数据给前端
-//处理任意RuntimeException异常，比如没有认证，没有权限等
+//用户未认证（未登录）时访问受保护资源。 返回的状态码 通常是 401（未授权）。
 @Slf4j
 public class MyAuthenticationEntryPoint implements AuthenticationEntryPoint
 {
